@@ -1,4 +1,7 @@
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Maze {
 
@@ -378,7 +381,44 @@ public class Maze {
      * @param debug true to show coordinates, false to hide
      */
     public static void updatePath( int[][] pathBefore, int[][] pathNew, boolean debug ) {
-        // TODO implement this method
+        // Java is a bad language
+        var pathBeforeAsSet = Arrays.stream(pathBefore).skip(1).collect(Collectors.toSet());
+        var pathNewAsSet = Arrays.stream(pathNew).collect(Collectors.toSet());
+
+        // Uncolor only these which arent in the new path
+        Arrays.stream(pathBefore).filter(c -> !pathNewAsSet.contains(c)).forEach(c -> {
+            StdDraw.setPenColor( StdDraw.WHITE );
+            StdDraw.filledSquare(c[0] + 1, c[1] + 1, 0.5);
+            if (debug) {
+                StdDraw.setPenColor( StdDraw.BLACK );
+                StdDraw.text(c[0] + 1, c[1] + 1, "(" + c[0] + "," + c[1] + ")");
+            }
+        });
+
+        // Draw the new tiles, but skip the first (since it has to be green)
+        // and every tile that occurred in the old path (except if it was the old start tile, since this would be green)
+        Arrays.stream(pathNew).skip(1).filter(c -> !pathBeforeAsSet.contains(c)).forEach(c -> {
+            StdDraw.setPenColor( StdDraw.RED );
+            StdDraw.filledSquare(c[0] + 1, c[1] + 1, 0.5);
+            if (debug) {
+                StdDraw.setPenColor( StdDraw.BLACK );
+                StdDraw.text(c[0] + 1, c[1] + 1, "(" + c[0] + "," + c[1] + ")");
+            }
+        });
+
+        // If the old start tile isn't the new one (or if the old path was empty)
+        // we need to put a new start tile.
+        if (pathBefore.length == 0 || pathNew[0] != pathBefore[0]) {
+            StdDraw.setPenColor( StdDraw.GREEN );
+            StdDraw.filledSquare(pathNew[0][0] + 1, pathNew[0][1] + 1, 0.5);
+            if (debug) {
+                StdDraw.setPenColor( StdDraw.BLACK );
+                StdDraw.text(pathNew[0][0] + 1, pathNew[0][1] + 1, "(" + pathNew[0][0] + "," + pathNew[0][1] + ")");
+            }
+        }
+        StdDraw.setPenColor( StdDraw.WHITE );
+
+
     }
 
     /**
