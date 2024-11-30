@@ -331,7 +331,7 @@ public class Maze {
      */
     public static boolean[][] loadMaze( String[] maze ) {
         // I hate java.
-        var result = new boolean[maze.length][maze[0].length()];
+        var result = new boolean[maze[0].length()][maze.length];
 
         for ( int i = 0; i < maze.length; i++ ) {
             var chars = maze[i].toCharArray();
@@ -428,7 +428,16 @@ public class Maze {
      * @return true if the path is valid
      */
     public static boolean isValidPath( boolean[][] maze, int[][] path ) {
-        // TODO implement this method
+        var old = path[0];
+        for (int[] current : path) {
+            if (!maze[current[0]][current[1]]) {
+                return false;
+            }
+            if (Math.abs(current[0] - old[0]) + Math.abs(current[1] - old[1]) > 1) {
+                return false;
+            }
+            old = current;
+        }
         return true;
     }
 
@@ -440,8 +449,7 @@ public class Maze {
      * @return true if the paths are the same
      */
     public static boolean comparePath( int[][] a, int[][] b ) {
-        // TODO implement this method
-        return true;
+        return Arrays.equals(a, b);
     }
 
     /**
