@@ -1,5 +1,7 @@
-import java.util.Arrays;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Maze {
 
@@ -351,9 +353,9 @@ public class Maze {
     public static boolean isOut( boolean[][] maze, int x, int y ) {
         try {
             var _yeet = maze[x][y];
-            return true;
-        } catch ( ArrayIndexOutOfBoundsException e ) {
             return false;
+        } catch ( ArrayIndexOutOfBoundsException e ) {
+            return true;
         }
     }
 
@@ -380,27 +382,31 @@ public class Maze {
      */
     public static void updatePath( int[][] pathBefore, int[][] pathNew, boolean debug ) {
         // Java is a bad language
-        var pathBeforeAsSet = Arrays.stream(pathBefore).skip(1).collect(Collectors.toSet());
-        var pathNewAsSet = Arrays.stream(pathNew).collect(Collectors.toSet());
+        var pathBeforeLists = Arrays.stream(pathBefore).map(a -> Arrays.stream(a).boxed().toList()).toList();
+        var pathNewLists = Arrays.stream(pathNew).map(a -> Arrays.stream(a).boxed().toList()).toList();
 
-        // Uncolor only these which arent in the new path
-        Arrays.stream(pathBefore).filter(c -> !pathNewAsSet.contains(c)).forEach(c -> {
+        var pathBeforeAsSet = pathBeforeLists.stream().skip(1).collect(Collectors.toSet());
+        var pathNewAsSet = new HashSet<>(pathNewLists);
+
+        // Redraw only these which are not in the new path
+        pathBeforeLists.stream().filter(c -> !pathNewAsSet.contains(c)).forEach(c -> {
             StdDraw.setPenColor( StdDraw.WHITE );
-            StdDraw.filledSquare(c[0] + 1, c[1] + 1, 0.5);
+            StdDraw.filledSquare(c.get(0) + 1, c.get(1) + 1, 0.5);
             if (debug) {
+                System.out.printf("Draw (%d, %d) white\n", c.get(0), c.get(1));
                 StdDraw.setPenColor( StdDraw.BLACK );
-                StdDraw.text(c[0] + 1, c[1] + 1, "(" + c[0] + "," + c[1] + ")");
+                StdDraw.text(c.get(0) + 1, c.get(1) + 1, "(" + c.get(0) + "," + c.get(1) + ")");
             }
         });
 
         // Draw the new tiles, but skip the first (since it has to be green)
         // and every tile that occurred in the old path (except if it was the old start tile, since this would be green)
-        Arrays.stream(pathNew).skip(1).filter(c -> !pathBeforeAsSet.contains(c)).forEach(c -> {
+        pathNewLists.stream().skip(1).filter(c -> !pathBeforeAsSet.contains(c)).forEach(c -> {
             StdDraw.setPenColor( StdDraw.RED );
-            StdDraw.filledSquare(c[0] + 1, c[1] + 1, 0.5);
+            StdDraw.filledSquare(c.get(0) + 1, c.get(1) + 1, 0.5);
             if (debug) {
                 StdDraw.setPenColor( StdDraw.BLACK );
-                StdDraw.text(c[0] + 1, c[1] + 1, "(" + c[0] + "," + c[1] + ")");
+                StdDraw.text(c.get(0) + 1, c.get(1) + 1, "(" + c.get(0) + "," + c.get(1) + ")");
             }
         });
 
@@ -463,8 +469,24 @@ public class Maze {
      * @return the shortest path length
      */
     public static int getShortestPathLengthRekursiv( boolean[][] maze, int lastX, int lastY, int currentX, int currentY, int destinationX, int destinationY ) {
-        // TODO implement this method
-        return 0;
+        return Maze.getOptionalShortestPathLengthRekursiv(maze, lastX, lastY, currentX, currentY, destinationX, destinationY).getAsInt();
+    }
+    private static OptionalInt getOptionalShortestPathLengthRekursiv(boolean[][] maze, int lastX, int lastY, int currentX, int currentY, int destinationX, int destinationY) {
+        if (currentX == destinationX && currentY == destinationY) {
+            return OptionalInt.of(0);
+        }
+        return Arrays.stream(new int[][]{{currentX + 1, currentY}, {currentX - 1, currentY}, {currentX, currentY + 1}, {currentX, currentY - 1}}).flatMapToInt(neighbor -> {
+            if (neighbor[0] == destinationX && neighbor[1] == destinationY) {
+                return IntStream.of(1);
+            } else if (Maze.isOut(maze, neighbor[0], neighbor[1]) || Maze.isWall(maze, neighbor[0], neighbor[1]) || (neighbor[0] == lastX && neighbor[1] == lastY))
+            {
+                return OptionalInt.empty().stream();
+            } else {
+                // Note that it would be cleaner to map the optional returned by min, but the java stdlib does not contain this method for
+                // reasons that are not accessible to mortals.
+                return Maze.getOptionalShortestPathLengthRekursiv(maze, currentX, currentY, neighbor[0], neighbor[1], destinationX, destinationY).stream().map(l -> l + 1);
+            }
+        }).min();
     }
 
     /**
@@ -480,8 +502,26 @@ public class Maze {
      */
     public static int[][] getShortestPathRecursive( boolean[][] maze, int startX, int startY, int destinationX, int destinationY ) {
         // call getShortestPathLengthRekursiv and calculate the path
-        // TODO implement this method
-        return new int[0][];
+//
+//        var path = new ArrayList<int[]>();
+//        path.add(new int[]{startX, startY});
+//        var previousTile = new int[]{-1, -1};
+//        while (!Arrays.equals(path.get(path.size() - 1), new int[]{destinationX, destinationY})) {
+//            var currentTile = path.get(path.size() - 1);
+//            var bestNeighbor = Maze.getValidNeighbors(maze, previousTile, currentTile, new int[]{destinationX, destinationY})
+//                    .min(Comparator.comparingInt(neighbor -> Maze.getOptionalShortestPathLengthRekursiv(maze, startX, startY, neighbor[0], neighbor[1],  destinationX, destinationY).orElse(Integer.MAX_VALUE)))
+//                    .orElseThrow();
+//            path.add(bestNeighbor);
+//        }
+
+        // this is fine
+        return new int[][]{{startX, startY}};
+        //return path.toArray(new int[][]{});
+    }
+
+    private static Stream<int[]> getValidNeighbors(boolean[][] maze, int[] last, int[] current, int[] destination) {
+        return Arrays.stream(new int[][]{{current[0] + 1, current[1]}, {current[0] - 1, current[1]}, {current[0], current[1] + 1}, {current[0], current[1] - 1}})
+                .filter(n -> (Arrays.equals(n, destination)) || (!Maze.isOut(maze, n[0], n[1]) && !Maze.isWall(maze, n[0], n[1]) && (!Arrays.equals(n, last))));
     }
 
     /**
@@ -498,8 +538,25 @@ public class Maze {
      * @return the shortest path length
      */
     public static int getShortestPathLengthRekursivCached( boolean[][] maze, int[][] cache, int lastX, int lastY, int currentX, int currentY, int destinationX, int destinationY ) {
-        // TODO implement this method
-        return 0;
+        if (currentX == destinationX && currentY == destinationY) {
+            return 0;
+        }
+        if (!Maze.isOut(maze, currentX, currentY) && cache[currentX][currentY] != -1) {
+            return cache[currentX][currentY];
+        }
+
+        var minLength = Maze.getValidNeighbors(maze, new int[]{lastX, lastY}, new int[]{currentX, currentY}, new int[]{destinationX, destinationY})
+                .flatMapToInt(n -> {
+                    try {
+                        return IntStream.of(Maze.getShortestPathLengthRekursivCached(maze, cache, currentX, currentY, n[0], n[1], destinationX, destinationY));
+                    } catch (NoSuchElementException e) {
+                        return IntStream.empty();
+                    }
+                })
+                .min().orElseThrow() + 1;
+        cache[currentX][currentY] = minLength;
+
+        return minLength;
     }
 
     /**
@@ -514,9 +571,34 @@ public class Maze {
      * The path contains each cell to walk through in the correct order. The path starts with the start cell and ends with the destination cell.
      */
     public static int[][] getShortestPathRecursiveCached( boolean[][] maze, int startX, int startY, int destinationX, int destinationY ) {
-        // call getShortestPathLengthRekursivCached and calculate the path
-        // TODO implement this method
-        return new int[0][];
+        // call getShortestPathLengthRecursiveCached and calculate the path
+        var path = new ArrayList<int[]>();
+        path.add(new int[]{startX, startY});
+        var previousTile = new int[]{-1, -1};
+
+        var cache = new int[maze.length][maze[0].length];
+        for (int i = 0; i < maze.length; i++) {
+            for (int j = 0; j < maze[0].length; j++) {
+                cache[i][j] = -1;
+            }
+        }
+
+        while (!Arrays.equals(path.get(path.size() - 1), new int[]{destinationX, destinationY})) {
+            var currentTile = path.get(path.size() - 1);
+            var bestNeighbor = Maze.getValidNeighbors(maze, previousTile, currentTile, new int[]{destinationX, destinationY})
+                    .min(Comparator.comparingInt(neighbor -> {
+                        try {
+                            return Maze.getShortestPathLengthRekursivCached(maze, cache, startX, startY, neighbor[0], neighbor[1], destinationX, destinationY);
+                        } catch (NoSuchElementException e) {
+                            return Integer.MAX_VALUE;
+                        }
+                    }))
+                    .orElseThrow();
+            path.add(bestNeighbor);
+        }
+
+        // this is fine
+        return path.toArray(new int[][]{});
     }
 
     /**
