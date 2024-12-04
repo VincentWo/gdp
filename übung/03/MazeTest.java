@@ -24,6 +24,6 @@ class MazeTest {
         }
         Assertions.assertEquals(11, Maze.getShortestPathLengthRekursiv(maze, -1, -1, 0, 0, 5, 4));
         Assertions.assertEquals(11, Maze.getShortestPathLengthRekursivCached(maze, cache, -1, -1, 0, 0, 5, 4));
-
+        Assertions.assertEquals(11, Maze.getShortestPathLengthIterative(maze, 0, 0, 5, 4));
     }
 }

@@ -502,21 +502,20 @@ public class Maze {
      */
     public static int[][] getShortestPathRecursive( boolean[][] maze, int startX, int startY, int destinationX, int destinationY ) {
         // call getShortestPathLengthRekursiv and calculate the path
-//
-//        var path = new ArrayList<int[]>();
-//        path.add(new int[]{startX, startY});
-//        var previousTile = new int[]{-1, -1};
-//        while (!Arrays.equals(path.get(path.size() - 1), new int[]{destinationX, destinationY})) {
-//            var currentTile = path.get(path.size() - 1);
-//            var bestNeighbor = Maze.getValidNeighbors(maze, previousTile, currentTile, new int[]{destinationX, destinationY})
-//                    .min(Comparator.comparingInt(neighbor -> Maze.getOptionalShortestPathLengthRekursiv(maze, startX, startY, neighbor[0], neighbor[1],  destinationX, destinationY).orElse(Integer.MAX_VALUE)))
-//                    .orElseThrow();
-//            path.add(bestNeighbor);
-//        }
+
+        var path = new ArrayList<int[]>();
+        path.add(new int[]{startX, startY});
+        var previousTile = new int[]{-1, -1};
+        while (!Arrays.equals(path.get(path.size() - 1), new int[]{destinationX, destinationY})) {
+            var currentTile = path.get(path.size() - 1);
+            var bestNeighbor = Maze.getValidNeighbors(maze, previousTile, currentTile, new int[]{destinationX, destinationY})
+                    .min(Comparator.comparingInt(neighbor -> Maze.getOptionalShortestPathLengthRekursiv(maze, startX, startY, neighbor[0], neighbor[1],  destinationX, destinationY).orElse(Integer.MAX_VALUE)))
+                    .orElseThrow();
+            path.add(bestNeighbor);
+        }
 
         // this is fine
-        return new int[][]{{startX, startY}};
-        //return path.toArray(new int[][]{});
+        return path.toArray(new int[][]{});
     }
 
     private static Stream<int[]> getValidNeighbors(boolean[][] maze, int[] last, int[] current, int[] destination) {
@@ -601,6 +600,17 @@ public class Maze {
         return path.toArray(new int[][]{});
     }
 
+    static class PathState {
+        int[] tile;
+        Stack<int[]> neighbors;
+        OptionalInt shortestDistance;
+
+        public PathState(boolean[][] maze, int[] previous, int[] tile, int[] destination) {
+            this.tile = tile;
+            this.neighbors = Maze.getValidNeighbors(maze, previous, tile, destination).collect(Collectors.toCollection(Stack::new));
+            this.shortestDistance = OptionalInt.empty();
+        }
+    }
     /**
      * This method calculates the shortest path from the start to the destination in the given maze
      * Do not use rekursion for this method
@@ -613,7 +623,28 @@ public class Maze {
      */
     public static int getShortestPathLengthIterative( boolean[][] maze, int startX, int startY, int destinationX, int destinationY ) {
         // TODO implement this method
-        return 0;
+        var path = new Stack<PathState>();
+        path.push(new PathState(maze, new int[]{-1, -1}, new int[]{startX, startY}, new int[]{destinationX, destinationY}));
+        while(true) {
+            try {
+                var nextNeighbor = path.lastElement().neighbors.pop();
+                if (Arrays.equals(nextNeighbor, new int[]{destinationX, destinationY})) {
+                    path.lastElement().shortestDistance = OptionalInt.of(1);
+                } else {
+                    path.push(new PathState(maze, path.lastElement().tile, nextNeighbor, new int[]{destinationX, destinationY}));
+                }
+
+            } catch (EmptyStackException e) {
+                if (path.size() == 1) {
+                    break;
+                }
+                var popped = path.pop();
+                popped.shortestDistance.ifPresent(i -> {
+                    path.lastElement().shortestDistance = OptionalInt.of(Math.min(path.lastElement().shortestDistance.orElse(Integer.MAX_VALUE), i + 1));
+                });
+            }
+        }
+        return path.lastElement().shortestDistance.orElseThrow();
     }
 
     /**
