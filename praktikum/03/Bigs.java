@@ -1,67 +1,102 @@
 public class Bigs {
 
     // addiert die Ziffernfelder a und b
-    public static int[ ] add (int[ ] a, int[ ] b) { /* TODO */ }
+    //public static int[ ] add (int[ ] a, int[ ] b) { /* TODO */ }
     
     // gibt das Ziffernfeld n in lesbarer dezimaler Form aus
-    static void print (int[ ] n) { /* TODO */ }
+    static void print (int[ ] n) {
+        String readable = "";
+        int inlinecount = 0;
+        for(int i=n.length-1; i>=0; i--){
+            readable = readable + String.valueOf(n[i]);
+            inlinecount++;
+            if(inlinecount==68){
+                readable = readable + "\\\n";
+                inlinecount = 0;
+            }
+        }
+        System.out.println(readable);
+    }
     
     // konstruiert ein einstelliges Ziffernfeld aus d
-    static int[ ] digit(int d) { /* TODO */ }
+    static int[ ] digit(int d) {
+        if(0<=d && d<10){
+            int[ ] dig = {d};
+            return dig;
+        }
+        else{
+            throw new IllegalArgumentException("Please only input single digits.");
+        }
+    }
     
     // konstruiert das Ziffernfeld, welches den Wert Null repraesentiert
-    static int[ ] Null() { /* TODO */ }
+    static int[ ] Null() {
+        int[ ] nil = {0};
+        return nil;
+    }
     
     // konstruiert das Ziffernfeld, welches den Wert Eins repraesentiert
-    static int[ ] One() { /* TODO */ }
+    static int[ ] One() {
+        int[ ] ein = {1};
+        return ein;
+    }
     
     // Rest des Ziffernfeldes n bei Division durch 10 (eine int-Zahl!)
-    static int mod10(int[ ] n) { /* TODO */ }
+    static int mod10(int[ ] n) {
+        int res = n[0];
+        return res;
+    }
     
     // ganzzahliger Quotient bei Division durch 10
-    static int[ ] div10(int[ ] n) { /* TODO */ }
+    static int[ ] div10(int[ ] n) {
+        int[ ] quot = new int[n.length-1];
+        for(int i=0; i<n.length-1; i++){
+            quot[i] = n[i];
+        }
+        return quot;
+    }
     
     // Umwandlung einer int-Zahl in ein Ziffernfeld
-    static int[ ] fromInt(int n) { /* TODO */ }
+    //static int[ ] fromInt(int n) { /* TODO */ }
     
     // kopiert den Wert von n
-    static int[ ] copy(int[ ] n) { /* TODO */ }
+    //static int[ ] copy(int[ ] n) { /* TODO */ }
     
     // multipliziert das Ziffernfeld n mit einer int-Zahl
-    static int[ ] times(int[ ] n, int d) { /* TODO */ }
+    //static int[ ] times(int[ ] n, int d) { /* TODO */ }
     
     // multipliziert das Ziffernfeld n mit 10
-    static int[ ] times10(int[ ] n) { /* TODO */ }
+    //static int[ ] times10(int[ ] n) { /* TODO */ }
     
     // multipliziert zwei Ziffernfelder
-    static int[ ] times(int[ ]a, int[ ] b) { /* TODO */ }
+    //static int[ ] times(int[ ]a, int[ ] b) { /* TODO */ }
     
     // Quadratzahl eines Ziffernfeldes
-    static int[ ] square(int[ ]a) { /* TODO */ }
+    //static int[ ] square(int[ ]a) { /* TODO */ }
     
     // Kubikzahl eines Ziffernfeldes
-    static int[ ] cubic(int[ ]a) { /* TODO */ }
+    //static int[ ] cubic(int[ ]a) { /* TODO */ }
     
     // ist dieses Ziffernfeld ein Palindrom? Bemühen Sie sich um eine Implementation,
     // die ohne ein weiteres Zahlenfeld auskommt !
-    static boolean palindrom(int[ ] a) { /* TODO */ }
+    //static boolean palindrom(int[ ] a) { /* TODO */ }
     
     // Test auf kleiner-Relation zweier Ziffernfelder: a < b ?
-    static boolean less (int[ ] a, int[ ] b) { /* TODO */ }
+    //static boolean less (int[ ] a, int[ ] b) { /* TODO */ }
     
     // Test auf Gleichheit zweier Ziffernfelder
-    static boolean equal (int[ ] a, int[ ] b) { /* TODO */ }
+    //static boolean equal (int[ ] a, int[ ] b) { /* TODO */ }
     
     // Test auf Korrektheit eines Ziffernfeldes: Feld existiert und enthaelt
     // mindenstens eine Ziffer, alle Positionen liegen zwischen 0 und 9
     // keine fuehrenden Nullen (ausser bei Null selbst)
-    static boolean ok (int[ ] n) { /* TODO */ }
+    //static boolean ok (int[ ] n) { /* TODO */ }
     
     // gibt die (kleinste) Ziffer mit der groessten Haeufigkeit in n aus
-    static void maxDigit(int[] n) { /* TODO */ }
+    //static void maxDigit(int[] n) { /* TODO */ }
     
     public static void main (String[ ] s) {
-    int[] a = One();
+    /*int[] a = One();
     
     for (int i=0; i<33222; ++i) {
     a = times(a, 2);
@@ -84,6 +119,6 @@ public class Bigs {
     
     System.out.println(less(a, c)); // beantwortet die Frage aus der Aufgabenueberschrift
     maxDigit(a);
-    maxDigit(c);
+    maxDigit(c);*/
     }
     }
