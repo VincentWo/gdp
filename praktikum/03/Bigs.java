@@ -101,7 +101,17 @@ public class Bigs {
     
     // ist dieses Ziffernfeld ein Palindrom? Bemühen Sie sich um eine Implementation,
     // die ohne ein weiteres Zahlenfeld auskommt !
-    //static boolean palindrom(int[ ] a) { /* TODO */ }
+    static boolean palindrom(int[ ] a) {
+        boolean isP = true;
+        int upp = a.length/2 + 1;
+        for(int i=0; i<upp; i++){
+            if(a[i] != a[a.length-i-1]){
+                isP = false;
+                break;
+            }
+        }
+        return isP;
+    }
     
     // Test auf kleiner-Relation zweier Ziffernfelder: a < b ?
     //static boolean less (int[ ] a, int[ ] b) { /* TODO */ }
@@ -121,8 +131,10 @@ public class Bigs {
     int[] a = One();
     print(a);
 
-    int[] b = fromInt(1234560058);
+    int[] b = fromInt(123321);
     print(b);
+    boolean c = palindrom(b);
+    System.out.println(c);
     
     /*for (int i=0; i<33222; ++i) {
     a = times(a, 2);
