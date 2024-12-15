@@ -57,7 +57,16 @@ public class Bigs {
     }
     
     // Umwandlung einer int-Zahl in ein Ziffernfeld
-    //static int[ ] fromInt(int n) { /* TODO */ }
+    static int[ ] fromInt(int n) {
+        String val = String.valueOf(n);
+        int len = val.length();
+        int[] big = new int[len];
+        for (int i=0; i<len; i++){
+            big[i] = n%10;
+            n = n/10;
+        }
+        return big;
+    }
     
     // kopiert den Wert von n
     //static int[ ] copy(int[ ] n) { /* TODO */ }
@@ -96,9 +105,13 @@ public class Bigs {
     //static void maxDigit(int[] n) { /* TODO */ }
     
     public static void main (String[ ] s) {
-    /*int[] a = One();
+    int[] a = One();
+    print(a);
+
+    int[] b = fromInt(1234560058);
+    print(b);
     
-    for (int i=0; i<33222; ++i) {
+    /*for (int i=0; i<33222; ++i) {
     a = times(a, 2);
     }
     
