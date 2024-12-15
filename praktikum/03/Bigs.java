@@ -3,11 +3,40 @@ import java.util.Arrays;
 public class Bigs {
 
     // addiert die Ziffernfelder a und b
-    /*public static int[ ] add (int[ ] a, int[ ] b) {
-        max = Math.max(a.length, b.length);
-        min = Math.min(a.length, b.length);
-
-    }*/
+    public static int[ ] add (int[ ] a, int[ ] b) {
+        int max = Math.max(a.length, b.length);
+        int min = Math.min(a.length, b.length);
+        int[] longer = new int[max];
+        int[] shorter = new int[min];
+        if(a.length >= b.length){
+            longer = a;
+            shorter = b;
+        } else {
+            longer = b;
+            shorter = a;
+        }
+        int[] sum = new int[max];
+        int entry = 0;
+        int carryOver = 0;
+        for(int i=0; i<max; i++){
+            entry = longer[i] + carryOver;
+            if(i<min){
+                entry = entry + shorter[i];
+            }
+            carryOver = entry/10;
+            entry = entry%10;
+            sum[i] = entry;
+        }
+        if(carryOver>0){
+            int[] sumi = new int[max+1];
+            sum[max] = carryOver;
+            for(int j = 0; j<max; j++){
+                sumi[j] = sum[j];
+            }
+            return sumi;
+        }
+        return sum;
+    }
     
     // gibt das Ziffernfeld n in lesbarer dezimaler Form aus
     static void print (int[ ] n) {
@@ -154,8 +183,8 @@ public class Bigs {
     int[] c = fromInt(123320);
 
     print(b);
-    boolean foo = less(c,b);
-    System.out.println(foo);
+    int[] foo = add(c,b);
+    print(foo);
     
     /*for (int i=0; i<33222; ++i) {
     a = times(a, 2);
