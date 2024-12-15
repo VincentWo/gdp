@@ -51,7 +51,7 @@ public class Bigs {
     static int[ ] div10(int[ ] n) {
         int[ ] quot = new int[n.length-1];
         for(int i=0; i<n.length-1; i++){
-            quot[i] = n[i];
+            quot[i] = n[i+1];
         }
         return quot;
     }
@@ -69,13 +69,26 @@ public class Bigs {
     }
     
     // kopiert den Wert von n
-    //static int[ ] copy(int[ ] n) { /* TODO */ }
+    static int[ ] copy(int[ ] n) {
+        int[] cop = new int[n.length];
+        for(int i=0; i<n.length; i++){
+            cop[i] = n[i];
+        }
+        return cop;
+    }
     
     // multipliziert das Ziffernfeld n mit einer int-Zahl
     //static int[ ] times(int[ ] n, int d) { /* TODO */ }
     
     // multipliziert das Ziffernfeld n mit 10
-    //static int[ ] times10(int[ ] n) { /* TODO */ }
+    static int[ ] times10(int[ ] n) {
+        int[ ] dec = new int[n.length+1];
+        dec[0] = 0;
+        for(int i=0; i<n.length; i++){
+            dec[i+1] = n[i];
+        }
+        return dec;
+    }
     
     // multipliziert zwei Ziffernfelder
     //static int[ ] times(int[ ]a, int[ ] b) { /* TODO */ }
