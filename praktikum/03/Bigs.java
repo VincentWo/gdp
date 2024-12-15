@@ -113,7 +113,18 @@ public class Bigs {
     }
     
     // multipliziert das Ziffernfeld n mit einer int-Zahl
-    //static int[ ] times(int[ ] n, int d) { /* TODO */ }
+    static int[ ] times(int[ ] n, int d) {
+        if(d<0){
+            throw new IllegalArgumentException("Please only multiply by natural numbers.");
+        } else if(d==0){
+            return Null();
+        }
+        int[ ] prod = copy(n);
+        for(int i=1; i<d; i++){
+            prod = add(prod, n); //this is probably stupid but it works
+        }
+        return prod;
+    }
     
     // multipliziert das Ziffernfeld n mit 10
     static int[ ] times10(int[ ] n) {
@@ -180,10 +191,10 @@ public class Bigs {
     print(a);
 
     int[] b = fromInt(123321);
-    int[] c = fromInt(123320);
+    //int[] c = fromInt(123320);
 
     print(b);
-    int[] foo = add(c,b);
+    int[] foo = times(b,2);
     print(foo);
     
     /*for (int i=0; i<33222; ++i) {
