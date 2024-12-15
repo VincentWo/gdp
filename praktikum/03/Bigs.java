@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Bigs {
 
     // addiert die Ziffernfelder a und b
@@ -117,7 +119,10 @@ public class Bigs {
     //static boolean less (int[ ] a, int[ ] b) { /* TODO */ }
     
     // Test auf Gleichheit zweier Ziffernfelder
-    //static boolean equal (int[ ] a, int[ ] b) { /* TODO */ }
+    static boolean equal (int[ ] a, int[ ] b) {
+        boolean equ = Arrays.equals(a, b); // Soll das auch leading zeros beachten? Einmal vorher Bigs.ok abfragen?
+        return equ;
+    }
     
     // Test auf Korrektheit eines Ziffernfeldes: Feld existiert und enthaelt
     // mindenstens eine Ziffer, alle Positionen liegen zwischen 0 und 9
@@ -132,6 +137,7 @@ public class Bigs {
     print(a);
 
     int[] b = fromInt(123321);
+
     print(b);
     boolean c = palindrom(b);
     System.out.println(c);
