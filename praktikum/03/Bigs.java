@@ -4,6 +4,7 @@ public class Bigs {
 
     // addiert die Ziffernfelder a und b
     public static int[ ] add (int[ ] a, int[ ] b) {
+        if(!(ok(a)&&ok(b))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
         int max = Math.max(a.length, b.length);
         int min = Math.min(a.length, b.length);
         int[] longer = new int[max];
@@ -29,7 +30,7 @@ public class Bigs {
         }
         if(carryOver>0){
             int[] sumi = new int[max+1];
-            sum[max] = carryOver;
+            sumi[max] = carryOver;
             for(int j = 0; j<max; j++){
                 sumi[j] = sum[j];
             }
@@ -40,6 +41,7 @@ public class Bigs {
     
     // gibt das Ziffernfeld n in lesbarer dezimaler Form aus
     static void print (int[ ] n) {
+        if(!(ok(n))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
         String readable = "";
         int inlinecount = 0;
         for(int i=n.length-1; i>=0; i--){
@@ -78,12 +80,14 @@ public class Bigs {
     
     // Rest des Ziffernfeldes n bei Division durch 10 (eine int-Zahl!)
     static int mod10(int[ ] n) {
+        if(!(ok(n))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
         int res = n[0];
         return res;
     }
     
     // ganzzahliger Quotient bei Division durch 10
     static int[ ] div10(int[ ] n) {
+        if(!(ok(n))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
         int[ ] quot = new int[n.length-1];
         for(int i=0; i<n.length-1; i++){
             quot[i] = n[i+1];
@@ -105,6 +109,7 @@ public class Bigs {
     
     // kopiert den Wert von n
     static int[ ] copy(int[ ] n) {
+        if(!(ok(n))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
         int[] cop = new int[n.length];
         for(int i=0; i<n.length; i++){
             cop[i] = n[i];
@@ -114,6 +119,7 @@ public class Bigs {
     
     // multipliziert das Ziffernfeld n mit einer int-Zahl
     static int[ ] times(int[ ] n, int d) {
+        if(!(ok(n))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
         if(d<0){
             throw new IllegalArgumentException("Please only multiply by natural numbers.");
         } else if(d==0){
@@ -137,17 +143,27 @@ public class Bigs {
     }
     
     // multipliziert zwei Ziffernfelder
-    //static int[ ] times(int[ ]a, int[ ] b) { /* TODO */ }
+    static int[ ] times(int[ ]a, int[ ] b) { //Namen doppelt belegen macht nix??
+        if(!(ok(a)&&ok(b))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
+        return a; 
+    } // NICHT FERTIG!!!!!!!
     
     // Quadratzahl eines Ziffernfeldes
-    //static int[ ] square(int[ ]a) { /* TODO */ }
+    static int[ ] square(int[ ]a) {
+        if(!(ok(a))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
+        return times(a, a);
+    }
     
     // Kubikzahl eines Ziffernfeldes
-    //static int[ ] cubic(int[ ]a) { /* TODO */ }
+    static int[ ] cubic(int[ ]a) {
+        if(!(ok(a))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
+        return times(square(a),a);
+    }
     
     // ist dieses Ziffernfeld ein Palindrom? Bemühen Sie sich um eine Implementation,
     // die ohne ein weiteres Zahlenfeld auskommt !
     static boolean palindrom(int[ ] a) {
+        if(!(ok(a))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
         boolean isP = true;
         int upp = a.length/2 + 1;
         for(int i=0; i<upp; i++){
@@ -161,6 +177,7 @@ public class Bigs {
     
     // Test auf kleiner-Relation zweier Ziffernfelder: a < b ?
     static boolean less (int[ ] a, int[ ] b) {
+        if(!(ok(a)&&ok(b))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
         if(a.length>b.length){return false;}
         else if(a.length<b.length){return true;}
         else{
@@ -174,6 +191,7 @@ public class Bigs {
     
     // Test auf Gleichheit zweier Ziffernfelder
     static boolean equal (int[ ] a, int[ ] b) {
+        if(!(ok(a)&&ok(b))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
         boolean equ = Arrays.equals(a, b); // Soll das auch leading zeros beachten? Einmal vorher Bigs.ok abfragen?
         return equ;
     }
@@ -181,7 +199,19 @@ public class Bigs {
     // Test auf Korrektheit eines Ziffernfeldes: Feld existiert und enthaelt
     // mindenstens eine Ziffer, alle Positionen liegen zwischen 0 und 9
     // keine fuehrenden Nullen (ausser bei Null selbst)
-    //static boolean ok (int[ ] n) { /* TODO */ }
+    static boolean ok (int[ ] n) {
+        if(!(ok(n))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, new leading zeros.");}
+        int len = n.length;
+        if(n[0]<0 || n[0]>9){
+            return false;
+        }
+        else if(len == 1){return true;}
+        else if(n[len-1]<1 || n[len-1]>9){return false;}
+        else for(int i=1; i<len-1; i++){
+            if(n[i]<0 || n[i]>9){return false;}
+        }
+        return true; // da die ifs alle returnen, braucht man die elses wahrscheinlich nicht (?)
+    }
     
     // gibt die (kleinste) Ziffer mit der groessten Haeufigkeit in n aus
     //static void maxDigit(int[] n) { /* TODO */ }
@@ -190,11 +220,11 @@ public class Bigs {
     int[] a = One();
     print(a);
 
-    int[] b = fromInt(123321);
-    //int[] c = fromInt(123320);
+    int[] b = fromInt(25);
+    int[] c = fromInt(5);
 
     print(b);
-    int[] foo = times(b,2);
+    int[] foo = times(b,10);
     print(foo);
     
     /*for (int i=0; i<33222; ++i) {
