@@ -3,7 +3,11 @@ import java.util.Arrays;
 public class Bigs {
 
     // addiert die Ziffernfelder a und b
-    //public static int[ ] add (int[ ] a, int[ ] b) { /* TODO */ }
+    /*public static int[ ] add (int[ ] a, int[ ] b) {
+        max = Math.max(a.length, b.length);
+        min = Math.min(a.length, b.length);
+
+    }*/
     
     // gibt das Ziffernfeld n in lesbarer dezimaler Form aus
     static void print (int[ ] n) {
@@ -116,7 +120,17 @@ public class Bigs {
     }
     
     // Test auf kleiner-Relation zweier Ziffernfelder: a < b ?
-    //static boolean less (int[ ] a, int[ ] b) { /* TODO */ }
+    static boolean less (int[ ] a, int[ ] b) {
+        if(a.length>b.length){return false;}
+        else if(a.length<b.length){return true;}
+        else{
+            for(int i=a.length-1; i>=0; i--){
+                if(a[i]<b[i]){return true;}
+                else if(a[i]>b[i]){return false;}
+            } //maybe clever ordering of conditions could decrease the expected amount of comparisons here
+        return false;
+        }
+    }
     
     // Test auf Gleichheit zweier Ziffernfelder
     static boolean equal (int[ ] a, int[ ] b) {
@@ -137,10 +151,11 @@ public class Bigs {
     print(a);
 
     int[] b = fromInt(123321);
+    int[] c = fromInt(123320);
 
     print(b);
-    boolean c = palindrom(b);
-    System.out.println(c);
+    boolean foo = less(c,b);
+    System.out.println(foo);
     
     /*for (int i=0; i<33222; ++i) {
     a = times(a, 2);
