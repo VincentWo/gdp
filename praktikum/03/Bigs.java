@@ -134,6 +134,10 @@ public class Bigs {
     
     // multipliziert das Ziffernfeld n mit 10
     static int[ ] times10(int[ ] n) {
+        if(!(ok(n))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, no leading zeros.");}
+        if(equal(n, Null())){
+            return n;
+        }
         int[ ] dec = new int[n.length+1];
         dec[0] = 0;
         for(int i=0; i<n.length; i++){
@@ -141,12 +145,42 @@ public class Bigs {
         }
         return dec;
     }
+
+    // multipliziert das Ziffernfeld n mit 10^p
+    static int[ ] times10pow(int[] n, int p){
+        if(!(ok(n))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, no leading zeros.");}
+        if(equal(n,Null())){
+            return n;
+        }
+        else if(p<0){
+            throw new IllegalArgumentException("This method only supports non-negative powers.");
+        }
+        else if(p==0){
+            return n;
+        }
+        else {
+            int[ ] decp = new int[n.length+p];
+            for(int i = 0; i<p; i++){
+                decp[i] = 0;
+            }
+            for(int j = 0; j<n.length; j++){
+                decp[j+p] = n[j];
+            }
+            return decp;
+        }
+    }
     
     // multipliziert zwei Ziffernfelder
-    static int[ ] times(int[ ]a, int[ ] b) {
+    static int[ ] times(int[ ] a, int[ ] b) {
         if(!(ok(a)&&ok(b))){throw new IllegalArgumentException("Please only input valid integer arrays. Digits only, no leading zeros.");}
-        return a;
-    } // NICHT FERTIG!!!!!!!
+        int[] prod = Null();
+        for(int i=0; i<b.length; i++){
+            int[ ] toAdd = times(a, b[i]);
+            toAdd = times10pow(toAdd, i); 
+            prod = add(prod, toAdd);
+        }
+        return prod;
+    } 
     
     // Quadratzahl eines Ziffernfeldes
     static int[ ] square(int[ ]a) {
@@ -248,6 +282,7 @@ public class Bigs {
     }
     
     public static void main (String[ ] s) {
+    
     int[] a = One();
     
     for (int i=0; i<33222; ++i) {
@@ -261,16 +296,16 @@ public class Bigs {
     int[] b = fromInt(13);
     int[] c = copy(b);
     
-    //for (int i=1; i<8978; ++i) {
-    //c=times(c, b);
-    //}
+    for (int i=1; i<8978; ++i) {
+    c=times(c, b);
+    }
     
-    //System.out.println("13^8978 hat " + c.length + " Stellen");
-    //print(c);
-    //System.out.println();
+    System.out.println("13^8978 hat " + c.length + " Stellen");
+    print(c);
+    System.out.println();
     
-    //System.out.println(less(a, c)); // beantwortet die Frage aus der Aufgabenueberschrift
+    System.out.println(less(a, c)); // beantwortet die Frage aus der Aufgabenueberschrift
     maxDigit(a);
-    //maxDigit(c);
+    maxDigit(c);
     }
     }
