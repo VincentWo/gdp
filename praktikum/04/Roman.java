@@ -26,7 +26,6 @@ public class Roman {
         }
     }
     public static void main(String[] args) {
-        // Behandlung fehlender oder falscher Eingabeparameter
         try{
             int N = Integer.parseInt(args[0]);
             if (N <= 0 || N > 5000 ) {
