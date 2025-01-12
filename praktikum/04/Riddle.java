@@ -1,4 +1,14 @@
+import java.util.ArrayList;
+
 public class Riddle {
+    static ArrayList<int[]> riddle_recursive(int[] box_current, int remain, int n){
+        for(int i=0; i<2*n-remain-1; i++){
+            if(box_current[i] == 0 && box_current[i+remain+1]==0){
+                
+            }
+        }
+    }
+
     static String riddle(int n){
         int[] riddlebox = new int[2*n];
         return "keine Loesung";
