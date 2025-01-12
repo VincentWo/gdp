@@ -4,13 +4,34 @@ public class Roman {
             return "M" + roman(n-1000);
         }
         else if(n>=500){
-            return "D" + roman(n-500);
+            if(n>=900){
+                return "CM" + roman(n-900);
+            }
+            else if(n>=800){
+                return "CCM" + roman(n-800);
+            }
+            else{
+                return "D" + roman(n-500);
+            }
         }
         else if(n>=100){
-            return "C" + roman(n-100);
+            if(n>=400){
+                return "CD" + roman(n-400);
+            }
+            else{
+                return "C" + roman(n-100);
+            }
         }
         else if(n>=50){
-            return "L" + roman(n-50);
+            if(n>=90){
+                return "XC" + roman(n-90);
+            }
+            else if(n>=80){
+                return "XXC" + roman(n-80);
+            }
+            else{
+                return "L" + roman(n-50);
+            }
         }
         else if(n>=10){
             return "X" + roman(n-10);
