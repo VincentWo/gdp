@@ -27,8 +27,17 @@ public class Roman {
     }
     public static void main(String[] args) {
         // Behandlung fehlender oder falscher Eingabeparameter
-        int N = Integer.parseInt(args[0]);
-        assert(1 <= N && N <= 5000) : "Die Zahl muss zwischen 1 und 5000 liegen."; //Apparently these have to be enabled somehow??
-        System.out.println(roman(N));
+        try{
+            int N = Integer.parseInt(args[0]);
+            if (N <= 0 || N > 5000 ) {
+                System.out.println("Die Zahl muss zwischen 1 und 5000 liegen.");
+                return;
+            }
+            assert(1 <= N && N <= 5000);
+            System.out.println(roman(N));
+        }
+        catch (Exception E) {
+            System.out.println("Bitte eine Zahl als Parameter angeben.");
+        }
     }
 }
