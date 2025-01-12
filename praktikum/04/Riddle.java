@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Riddle {
 
@@ -10,6 +11,14 @@ public class Riddle {
             cop[i] = n[i];
         }
         return cop;
+    }
+
+    static String write_array(int[] arr){
+        String ret_str = "";
+        for(int i=0; i<arr.length; i++){
+            ret_str += Integer.toString(arr[i]);
+        }
+        return ret_str;
     }
 
     static ArrayList<int[]> riddle_recursive(int[] box_current, int remain, int n){
@@ -36,18 +45,38 @@ public class Riddle {
     static String riddle(int n){
         int[] riddlebox = new int[2*n];
         ArrayList<int[]> all_results = riddle_recursive(riddlebox, n, n);
-        /*for(int[] a : all_results){
-            System.out.println(Arrays.toString(a));
-        }
-        return "foo";*/
         int s = all_results.size();
         if(s == 0){
             return "keine Loesung";
         }
+        String asw = "";
         if(n <= 10){
-            return "foo";
+            while(all_results.size()>0){
+                int[] a = all_results.remove(0);
+                int[] b = new int[a.length];
+                for(int i=0; i<a.length; i++){
+                    b[i] = a[a.length-i-1];
+                }
+                if(a[0]<b[0]){
+                    asw = asw + write_array(a) + "\n";
+                }
+                else{
+                    asw = asw + write_array(b) + "\n";
+                }
+                for(int[] c : all_results){
+                    if( Arrays.equals(c, b) ){
+                        all_results.remove(c);
+                        break;
+                    }
+                }
+            }
         }
-        String asw = Integer.toString(s/2) + " Loesungen";
+        if(s==2){
+            asw += "eine Loesung";
+        }
+        else{
+            asw += Integer.toString(s/2) + " Loesungen";
+        }
         return asw;
     }
 
@@ -63,6 +92,7 @@ public class Riddle {
         }
         catch (Exception E) {
             System.out.println("Bitte eine Zahl als Parameter angeben.");
+            System.out.println(E);
         }
     }
 }
