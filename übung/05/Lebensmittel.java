@@ -8,9 +8,9 @@ public abstract class Lebensmittel
         this.menge = menge;
     }
 
-    public abstract boolean essen();
+    public abstract boolean essen(int Menge);
 
-    public abstract boolean trinken();
+    public abstract boolean trinken(int Menge);
 
     public String toString() {
         return "Lebensmittel";
