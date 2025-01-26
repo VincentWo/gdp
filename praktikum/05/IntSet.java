@@ -92,7 +92,18 @@ public class IntSet implements Iterable<Integer> {
 	 * @param e eine nichtnegative ganze Zahl zwischen 0 und capacity
 	 */
 	public void insert(int e) {
-		// TODO: Position im IntSet berechnen und entsprechendes Bit setzen
+		try{
+			if(e>=0 && e<=this.capacity()){
+				int word_no = (e+1)/BitsPerWord;
+				int place_in_word = (e+1)%BitsPerWord;
+				int ins_bit = (1 << place_in_word);
+				this.intset[word_no] = this.intset[word_no] | ins_bit;
+			}
+		}
+		catch(Exception E){
+			System.out.println("nur nichtnegative Zahlen innerhalb der Kapazitaet uebergeben");
+			System.out.println(E);
+		}
 	}
 
 	/**
@@ -101,7 +112,9 @@ public class IntSet implements Iterable<Integer> {
 	 * @param es ein Array von nichtnegativen ganzen Zahlen
 	 */
 	public void insert(int es[]) {
-		// TODO: alle Elemente im Array einfuegen
+		for(int i=0; i<es.length; i++){
+			this.insert(es[i]);
+		}
 	}
 	
 	/**
@@ -110,7 +123,13 @@ public class IntSet implements Iterable<Integer> {
 	 * @param e eine nichtnegative ganze Zahl zwischen 0 und capacity
 	 */
 	public void remove(int e) {
-		// TODO: Position im IntSet berechnen und entsprechendes Bit nullen
+		if(this.contains(e)){
+			int word_no = (e+1)/BitsPerWord;
+			int place_in_word = (e+1)%BitsPerWord;
+			int rem_bit = (1 << place_in_word);
+			rem_bit = ~rem_bit;
+			this.intset[word_no] = this.intset[word_no] & rem_bit;
+		}
 	}
 
 	/**
@@ -119,7 +138,9 @@ public class IntSet implements Iterable<Integer> {
 	 * @param es ein Array von nichtnegativen ganzen Zahlen
 	 */
 	public void remove(int[] es) {
-		// TODO: alle Elemente aus dem Array entfernen
+		for(int i=0; i<es.length; i++){
+			this.remove(es[i]);
+		}
 	}
 
 	/**
