@@ -30,10 +30,7 @@ public class IntSet implements Iterable<Integer> {
 	public IntSet(int n) {
 		try{
 			if(n>=0){
-				int words_for_bits = (n+1)/BitsPerWord;
-				if((n+1)%BitsPerWord!=0){
-					words_for_bits++;
-				}
+				int words_for_bits = (n/BitsPerWord)+1;
 				this.intset = new int[words_for_bits];
 			}
 		}
@@ -48,7 +45,7 @@ public class IntSet implements Iterable<Integer> {
 	 * @return die Kapazitaet der Menge
 	 */
 	public int capacity() {
-		int cap = this.intset.length * BitsPerWord;
+		int cap = (this.intset.length * BitsPerWord)-1;
 		return cap;
 	}
 
@@ -79,7 +76,7 @@ public class IntSet implements Iterable<Integer> {
 		if(e<0 || e>this.capacity()){
 			return false;
 		}
-		int word_no = (e+1)/BitsPerWord;
+		int word_no = e/BitsPerWord;
 		int word = this.intset[word_no];
 		int place_in_word = e%BitsPerWord;
 		int contain_bit = (word >> place_in_word) & 1;
@@ -94,7 +91,7 @@ public class IntSet implements Iterable<Integer> {
 	public void insert(int e) {
 		try{
 			if(e>=0 && e<=this.capacity()){
-				int word_no = (e+1)/BitsPerWord;
+				int word_no = e/BitsPerWord;
 				int place_in_word = e%BitsPerWord;
 				int ins_bit = (1 << place_in_word);
 				this.intset[word_no] = this.intset[word_no] | ins_bit;
@@ -124,7 +121,7 @@ public class IntSet implements Iterable<Integer> {
 	 */
 	public void remove(int e) {
 		if(this.contains(e)){
-			int word_no = (e+1)/BitsPerWord;
+			int word_no = e/BitsPerWord;
 			int place_in_word = e%BitsPerWord;
 			int rem_bit = (1 << place_in_word);
 			rem_bit = ~rem_bit;
@@ -176,7 +173,15 @@ public class IntSet implements Iterable<Integer> {
 		int cap = Integer.max(s1.capacity(), s2.capacity());
 		IntSet uni = new IntSet(cap);
 		for(int i=0; i<uni.intset.length; i++){
-			uni.intset[i] = s1.intset[i] | s2.intset[i];
+			if(i<s1.intset.length && i<s2.intset.length){
+				uni.intset[i] = s1.intset[i] | s2.intset[i];
+			}
+			else if(i>=s1.intset.length){
+				uni.intset[i] = s2.intset[i];
+			}
+			else{
+				uni.intset[i] = s1.intset[i];
+			}
 		}
 		return uni;
 	}
@@ -192,7 +197,7 @@ public class IntSet implements Iterable<Integer> {
 	 * @return die symmetrische Differenzmenge
 	 */
 	public static IntSet intersection(IntSet s1, IntSet s2) {
-		int cap = Integer.max(s1.capacity(), s2.capacity());
+		int cap = Integer.min(s1.capacity(), s2.capacity());
 		IntSet inter = new IntSet(cap);
 		for(int i=0; i<inter.intset.length; i++){
 			inter.intset[i] = s1.intset[i] & s2.intset[i];
@@ -241,9 +246,9 @@ public class IntSet implements Iterable<Integer> {
 	@Override
 	public String toString() {
 		String s = "{";
-		String add_str; 
+		String add_str;
+		boolean needs_comma = false;
 		for(int i=0; i<this.capacity(); i++){
-			boolean needs_comma = false;
 			if(this.contains(i)){
 				add_str = String.valueOf(i);
 				if(needs_comma){
