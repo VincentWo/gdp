@@ -18,7 +18,7 @@
  */
 public class IntSet implements Iterable<Integer> {
 	private static final int BitsPerWord = Integer.SIZE;
-	// TODO: Instanzvariablen deklarieren
+	private int[] intset;
 
 	/**
 	 * Konstruiert ein leere Zahlenmenge der Kapazitaet <code>n</code>:
@@ -28,7 +28,18 @@ public class IntSet implements Iterable<Integer> {
 	 * @param n die Kapazitaet der Menge
 	 */
 	public IntSet(int n) {
-		// TODO: Konstruktor implementieren
+		try{
+			if(n>=0){
+				int words_for_bits = (n+1)/BitsPerWord;
+				if((n+1)%BitsPerWord!=0){
+					words_for_bits++;
+				}
+				this.intset = new int[words_for_bits];
+			}
+		}
+		catch(Exception E){
+			System.out.println("nur nichtnegative ganze Zahlen uebergeben");
+		}
 	}
 
 	/**
@@ -37,8 +48,8 @@ public class IntSet implements Iterable<Integer> {
 	 * @return die Kapazitaet der Menge
 	 */
 	public int capacity() {
-		// TODO: Anzahl potenziell enthaltener Elemente zurueckgeben
-		return 0;
+		int cap = this.intset.length * BitsPerWord;
+		return cap;
 	}
 
 	/**
@@ -52,12 +63,12 @@ public class IntSet implements Iterable<Integer> {
 	 */
 	public IntSet resize(int n) {
 		IntSet s = new IntSet(n);
-
-		// TODO: urspruengliche Elemente uebernehmen
-
+		for(int i=0; i<s.intset.length; i++){
+			s.intset[i] = this.intset[i];
+		}
 		return s;
 	}
-
+	
 	/**
 	 * Ermittelt, ob eine nicht-negative ganze Zahl in der Menge enthalten ist.
 	 * 
@@ -65,8 +76,14 @@ public class IntSet implements Iterable<Integer> {
 	 * @return ist e in dieser Menge enthalten?
 	 */
 	public boolean contains(int e) {
-		// TODO: Bit an der richtigen Stelle isolieren und zurueckgeben
-		return false;
+		if(e<0 || e>this.capacity()){
+			return false;
+		}
+		int word_no = (e+1)/BitsPerWord;
+		int word = this.intset[word_no];
+		int place_in_word = (e+1)%BitsPerWord;
+		int contain_bit = (word >> place_in_word) & 1;
+		return (contain_bit == 1);
 	}
 
 	/**
