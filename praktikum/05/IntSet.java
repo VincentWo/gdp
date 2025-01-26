@@ -81,7 +81,7 @@ public class IntSet implements Iterable<Integer> {
 		}
 		int word_no = (e+1)/BitsPerWord;
 		int word = this.intset[word_no];
-		int place_in_word = (e+1)%BitsPerWord;
+		int place_in_word = e%BitsPerWord;
 		int contain_bit = (word >> place_in_word) & 1;
 		return (contain_bit == 1);
 	}
@@ -95,7 +95,7 @@ public class IntSet implements Iterable<Integer> {
 		try{
 			if(e>=0 && e<=this.capacity()){
 				int word_no = (e+1)/BitsPerWord;
-				int place_in_word = (e+1)%BitsPerWord;
+				int place_in_word = e%BitsPerWord;
 				int ins_bit = (1 << place_in_word);
 				this.intset[word_no] = this.intset[word_no] | ins_bit;
 			}
@@ -125,7 +125,7 @@ public class IntSet implements Iterable<Integer> {
 	public void remove(int e) {
 		if(this.contains(e)){
 			int word_no = (e+1)/BitsPerWord;
-			int place_in_word = (e+1)%BitsPerWord;
+			int place_in_word = e%BitsPerWord;
 			int rem_bit = (1 << place_in_word);
 			rem_bit = ~rem_bit;
 			this.intset[word_no] = this.intset[word_no] & rem_bit;
@@ -173,8 +173,12 @@ public class IntSet implements Iterable<Integer> {
 	 * @return die Vereinigungsmenge
 	 */
 	public static IntSet union(IntSet s1, IntSet s2) {
-		// TODO: alle Elemente identifizieren, die in s1 oder s2 enthalten sind
-		return null;
+		int cap = Integer.max(s1.capacity(), s2.capacity());
+		IntSet uni = new IntSet(cap);
+		for(int i=0; i<uni.intset.length; i++){
+			uni.intset[i] = s1.intset[i] | s2.intset[i];
+		}
+		return uni;
 	}
 
 	/**
@@ -188,8 +192,12 @@ public class IntSet implements Iterable<Integer> {
 	 * @return die symmetrische Differenzmenge
 	 */
 	public static IntSet intersection(IntSet s1, IntSet s2) {
-		// TODO: alle Elemente identifizieren, die in s1 und s2 enthalten sind
-		return null;
+		int cap = Integer.max(s1.capacity(), s2.capacity());
+		IntSet inter = new IntSet(cap);
+		for(int i=0; i<inter.intset.length; i++){
+			inter.intset[i] = s1.intset[i] & s2.intset[i];
+		}
+		return inter;
 	}
 
 	/**
@@ -203,8 +211,7 @@ public class IntSet implements Iterable<Integer> {
 	 * @return die Differenzmenge
 	 */
 	public static IntSet difference(IntSet s1, IntSet s2) {
-		// TODO: alle Elemente identifizieren, die in s1 aber nicht in s2 sind
-		return null;
+		return intersection(s1, s2.complement());
 	}
 
 	/**
@@ -243,6 +250,7 @@ public class IntSet implements Iterable<Integer> {
 					add_str = ", " + add_str;
 				}
 				s += add_str;
+				needs_comma = true;
 			}
 		}
 		return s + "}";
