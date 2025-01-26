@@ -12,7 +12,6 @@ public abstract class Lebensmittel
 
     public abstract boolean trinken();
 
-
     public String toString() {
         return "Lebensmittel";
     }
