@@ -19,6 +19,10 @@ public class Brot extends Speise{
         super(typename(type), menge);
     }
 
+    public boolean essen(){
+        return this.essen(50);
+    }
+
     public boolean essen(int menge){
         if(this.menge < menge){
             this.menge = 0;
@@ -26,5 +30,10 @@ public class Brot extends Speise{
         }
         this.menge -= menge;
         return true;
+    }
+
+    @Override
+    public String toString(){
+        return "Brot (" + this.name + ", " + this.menge + "g)";
     }
 }

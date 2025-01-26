@@ -4,6 +4,10 @@ public class Kaese extends Speise{
         super(name, menge);
     }
 
+    public boolean essen(){
+        return this.essen(20);
+    }
+
     public boolean essen(int menge) {
         if(this.menge < menge){
             this.menge = 0;
@@ -11,5 +15,10 @@ public class Kaese extends Speise{
         }
         this.menge -= menge;
         return true;
+    }
+
+    @Override
+    public String toString(){
+        return "Kaese (" + this.name + ", " + this.menge + "g)";
     }
 }

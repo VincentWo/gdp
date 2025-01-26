@@ -1,6 +1,6 @@
 public abstract class Lebensmittel 
 {
-    private final String name;
+    public final String name;
     protected int menge; // in Milliliter bzw. Gramm
 
     public Lebensmittel(String name, int menge) {
@@ -9,8 +9,10 @@ public abstract class Lebensmittel
     }
 
     public abstract boolean essen(int Menge);
+    public abstract boolean essen();
 
     public abstract boolean trinken(int Menge);
+    public abstract boolean trinken();
 
     public String toString() {
         return "Lebensmittel";

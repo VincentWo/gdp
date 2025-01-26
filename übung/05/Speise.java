@@ -6,7 +6,13 @@ public abstract class Speise extends Lebensmittel{
 
     public abstract boolean essen(int Menge);
 
+    public abstract boolean essen();
+
     public boolean trinken(int Menge) {
+        return false;
+    }
+
+    public boolean trinken() {
         return false;
     }
 }
