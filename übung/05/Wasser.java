@@ -1,7 +1,7 @@
 public class Wasser extends Getraenk{ //final class?
 
-    public Wasser(int menge){
-        super("Wasser", menge);
+    public Wasser(String name, int menge){
+        super(name, menge);
     }
 
     public boolean trinken(int menge) {

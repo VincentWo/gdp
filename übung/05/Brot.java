@@ -15,7 +15,7 @@ public class Brot extends Speise{
         return "Spezialbrot";
     }
 
-    private Brot(int type, int menge){
+    public Brot(int type, int menge){
         super(typename(type), menge);
     }
 
