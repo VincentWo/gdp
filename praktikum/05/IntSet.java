@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 /**
  * Mengen nichtnegativer ganzer Zahlen in kompakter
  * Speicherrepraesentation: ob eine Zahl in der Menge enthalten
@@ -19,6 +21,7 @@
 public class IntSet implements Iterable<Integer> {
 	private static final int BitsPerWord = Integer.SIZE;
 	private int[] intset;
+	private int cap;
 
 	/**
 	 * Konstruiert ein leere Zahlenmenge der Kapazitaet <code>n</code>:
@@ -32,6 +35,7 @@ public class IntSet implements Iterable<Integer> {
 			if(n>=0){
 				int words_for_bits = (n/BitsPerWord)+1;
 				this.intset = new int[words_for_bits];
+				this.cap = n;
 			}
 		}
 		catch(Exception E){
@@ -45,8 +49,7 @@ public class IntSet implements Iterable<Integer> {
 	 * @return die Kapazitaet der Menge
 	 */
 	public int capacity() {
-		int cap = (this.intset.length * BitsPerWord)-1;
-		return cap;
+		return this.cap;
 	}
 
 	/**
@@ -60,8 +63,14 @@ public class IntSet implements Iterable<Integer> {
 	 */
 	public IntSet resize(int n) {
 		IntSet s = new IntSet(n);
-		for(int i=0; i<s.intset.length; i++){
+		for(int i=0; i<s.intset.length && i<this.intset.length; i++){
 			s.intset[i] = this.intset[i];
+		}
+		if(n<this.cap){
+			int last_word_bits = n - (s.intset.length-1) * BitsPerWord;
+			int right_1s = ~0; //11...1 (BitsPerWord digits)
+			right_1s = (right_1s >> (BitsPerWord-last_word_bits)); //00...0 followed by 11.1 (last_word_bits digits)
+			s.intset[s.intset.length-1] = (this.intset[s.intset.length-1] & right_1s);
 		}
 		return s;
 	}
@@ -73,7 +82,7 @@ public class IntSet implements Iterable<Integer> {
 	 * @return ist e in dieser Menge enthalten?
 	 */
 	public boolean contains(int e) {
-		if(e<0 || e>this.capacity()){
+		if(e<0 || e>this.cap){
 			return false;
 		}
 		int word_no = e/BitsPerWord;
@@ -216,7 +225,9 @@ public class IntSet implements Iterable<Integer> {
 	 * @return die Differenzmenge
 	 */
 	public static IntSet difference(IntSet s1, IntSet s2) {
-		return intersection(s1, s2.complement());
+		IntSet s2_adjusted = s2.resize(s1.cap);
+		s2_adjusted = s2_adjusted.complement();
+		return intersection(s1, s2_adjusted);
 	}
 
 	/**
@@ -248,7 +259,7 @@ public class IntSet implements Iterable<Integer> {
 		String s = "{";
 		String add_str;
 		boolean needs_comma = false;
-		for(int i=0; i<this.capacity(); i++){
+		for(int i=0; i<this.cap; i++){
 			if(this.contains(i)){
 				add_str = String.valueOf(i);
 				if(needs_comma){
@@ -280,15 +291,18 @@ public class IntSet implements Iterable<Integer> {
 	 * IntSet Mengen-Iterator
 	 */
 	public class Iterator implements java.util.Iterator<Integer> {
-		// TODO: Instanzvariablen deklarieren
-
+		//public int word_idx;
+		//public int bit_idx;
+		public int total_idx;
 		/**
 		 * Erzeugt einen Iterator ueber <code>s</code>.
 		 * 
 		 * @param s die Menge, ueber die iteriert werden soll
 		 */
 		public Iterator(IntSet s) {
-			// TODO: Initialisierung der Instanzvariablen
+			//this.word_idx = 0;
+			//this.bit_idx = 0;
+			this.total_idx = 0;
 		}
 
 		/**
@@ -296,7 +310,11 @@ public class IntSet implements Iterable<Integer> {
 		 */
 		@Override
 		public boolean hasNext() {
-			// TODO: ermitteln, ob weitere Elemente im IntSet sind
+			for(int i=total_idx+1; i<cap; i++){
+				if(contains(i)){
+					return true;
+				}
+			}
 			return false;
 		}
 
@@ -307,8 +325,14 @@ public class IntSet implements Iterable<Integer> {
 		 */
 		@Override
 		public Integer next() {
-			// TODO: naechstes (enthaltenes) Element zurueckgeben
-			return -1;
+			Integer ret = Integer.valueOf(total_idx);
+			for(int i = total_idx+1; i<cap; i++){
+				if(contains(i)){
+					total_idx = i;
+					break;
+				}
+			}
+			return ret;
 		}
 	}
 }
