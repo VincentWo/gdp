@@ -153,8 +153,11 @@ public class IntSet implements Iterable<Integer> {
 	 * @return die Komplementaermenge
 	 */
 	public IntSet complement() {
-		// TODO: alle Elemente identifizieren, die nicht in dieser Menge enthalten sind
-		return null;
+		IntSet comp = new IntSet(this.capacity());
+		for(int i=0; i<this.intset.length; i++){
+			comp.intset[i] = ~this.intset[i];
+		}
+		return comp;
 	}
 
 	/**
@@ -212,9 +215,14 @@ public class IntSet implements Iterable<Integer> {
 	 */
 	public String bits() {
 		String bitString = "";
-
-		// TODO: Bitstring konstruieren: 1 falls das Element enthalten ist, 0 sonst
-
+		for(int i=0; i<this.capacity(); i++){
+			if(this.contains(i)){
+				bitString += "1";
+			}
+			else{
+				bitString += "0";
+			}
+		}
 		return bitString;
 	}
 
@@ -226,9 +234,17 @@ public class IntSet implements Iterable<Integer> {
 	@Override
 	public String toString() {
 		String s = "{";
-
-		// TODO: Indizes aller enthaltenen Elemente kommasepariert ausgeben
-
+		String add_str; 
+		for(int i=0; i<this.capacity(); i++){
+			boolean needs_comma = false;
+			if(this.contains(i)){
+				add_str = String.valueOf(i);
+				if(needs_comma){
+					add_str = ", " + add_str;
+				}
+				s += add_str;
+			}
+		}
 		return s + "}";
 	}
 
